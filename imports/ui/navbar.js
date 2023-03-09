@@ -7,32 +7,32 @@ export default [
   {
     title: 'Customer',
     route:{name: 'Customer'},
-    icon: 'fa-solid fa-people-group',
+    icon: 'fa-solid fa-users',
   },
   {
     title: 'Sale',
     route:{name: ''},
-    icon: 'fa-solid fa-house',
+    icon: 'fa-solid fa-tag',
   },
   {
     title: 'Receipt',
     route:{name: ''},
-    icon: 'fa-solid fa-users',
+    icon:"fa-solid fa-file-invoice"
   },
   {
     title: 'Vendor',
-    route:{name: ''},
-    icon: 'fa-solid fa-truck',
+    route:{name: 'vendor'},
+    icon: 'fa-solid fa-user-secret',
   },
   {
     title: 'Purchase',
     route:{name: ''},
-    icon: 'fa-solid fa-house',
+    icon: 'fa-solid fa-bag-shopping',
   },
   {
     title: 'Payment',
     route:{name: ''},
-    icon: 'fa-solid fa-users',
+    icon: 'fa-solid fa-money-check-dollar',
   },
   // {
   //   title: 'Setting',
@@ -53,7 +53,7 @@ export default [
   },
   {
     title: 'Admin Setting',
-    icon: 'fa-solid fa-user-cog',
+    icon: 'fa-solid fa-gears',
     group: 'admin',
     route: { name: 'AdminSetting', params: { activeCom: 'profile' } },
     children: [
@@ -67,7 +67,7 @@ export default [
         title: 'Employee',
         route: { name: 'AdminSetting', params: { activeCom: 'employee' } },
         group: 'admin',
-        icon: 'fa-solid fa-users',
+        icon:'far fa-people-simple'
         // roles: ['admin'],
       },
       {

@@ -39,6 +39,17 @@ export default  [
       },
     },
   },
+  {
+    path: '/vendor',
+    name: 'vendor',
+    component: () => import('./pages/Vendor.vue'),
+    meta: {
+      title: 'Vendor',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+  },
   // {
   //   path: '/about',
   //   name: 'about',
