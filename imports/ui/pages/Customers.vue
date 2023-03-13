@@ -1,5 +1,5 @@
 <template>
-  <q-table
+  <q-table class="q-pa-md"
     v-model:pagination="pagination"
     bordered
     flat
@@ -12,8 +12,8 @@
   >
     <template #top>
       <div class="q-gutter-x-md">
-        <q-btn color="primary" no-caps icon="add" @click.prevent="addNew">
-          Add
+        <q-btn color="brown-5" no-caps icon="add" @click.prevent="addNew">
+          Add New Customer
         </q-btn>
       </div>
 
