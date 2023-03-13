@@ -77,8 +77,6 @@
   import Notify from '/imports/ui/lib/notify'
   import {ref,watch} from 'vue'
   import { useQuasar } from 'quasar';
-  
-  
   const $q=useQuasar()
   const props=defineProps({
     dialog:{

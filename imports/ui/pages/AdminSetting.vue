@@ -111,7 +111,6 @@ export default {
       comTitle,
       comIcon,
       menuItems,
-
       changeCom,
     }
   },
