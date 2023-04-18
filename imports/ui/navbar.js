@@ -9,9 +9,10 @@ export default [
     route:{name: 'Customer'},
     icon: 'fa-solid fa-users',
   },
+
   {
     title: 'Sale',
-    route:{name: ''},
+    route:{name: 'Sale'},
     icon: 'fa-solid fa-tag',
   },
   {
@@ -22,7 +23,7 @@ export default [
   {
     title: 'Vendor',
     route:{name: 'vendor'},
-    icon: 'fa-solid fa-user-secret',
+    icon: 'fa-solid fa-person-hiking',
   },
   {
     title: 'Purchase',
@@ -34,18 +35,12 @@ export default [
     route:{name: ''},
     icon: 'fa-solid fa-money-check-dollar',
   },
-  // {
-  //   title: 'Setting',
-  //   route:{name: ''},
-  //   icon: 'fa-solid fa-gears',
-  //   children:[
-  //     {
-  //       title: 'Employee',
-  //       route:{name: ''},
-  //       icon: 'fa-solid fa-users',
-  //     },
-  //   ]
-  // },
+
+  {
+    title: 'Item',
+    route:{name: 'Item'},
+    icon: 'fa-solid fa-shapes',
+  },
   {
     title: 'Report',
     route:{name: 'Report'},
@@ -65,10 +60,20 @@ export default [
       },
       {
         title: 'Employee',
-        route: { name: 'AdminSetting', params: { activeCom: 'employee' } },
+        route: { name: 'employee', params: { activeCom: 'employee' } },
         group: 'admin',
-        icon:'far fa-people-simple'
+        icon:'far fa-child-dress'
         // roles: ['admin'],
+      },
+      {
+        title: 'Unit',
+        route:{name: 'unit'},
+        icon: 'fa-solid fa-recycle',
+      },
+      {
+        title: 'Category',
+        route:{name: 'category'},
+        icon: 'fa-solid fa-cart-plus',
       },
       {
         title: 'User',

@@ -2,43 +2,31 @@
   <q-dialog no-esc-dismiss no-backdrop-dismiss v-model="visableDialog" @hide="$event => cancel">
     <q-card style="width:70%; max-width: 80vw;">
       <q-card-section>
-        <div class="text-h6">Vendor</div>
+        <div class="text-h6">Item</div>
       </q-card-section>
       <q-card-section>
         <q-form ref="refForm">
           <div class="row q-col-gutter-sm">
             <div class="col">
-              <q-input
-                v-model="form.name"
-                :rules="rules.name"
-                label="Name *"
-              ></q-input>
+              <q-input v-model="form.name" :rules="rules.name" label="Name *"></q-input>
+              <!-- <select v-model="form.catId"  label="Select Category Name" item-value="_id">
+                                <option v-for="cat in showCat" :value="cat._id">{{ cat.name }}</option>
+                            </select> -->
+              <q-select v-model="form.catId" emit-value map-options :options="showCat" option-value="_id" option-label="name"
+                label="Select Category Name" />
 
-              <q-input
-                v-model="form.telephone"
-                label="Telephone"
-                required
-              ></q-input>
+              <q-select v-model="form.unitId" emit-value map-options :options="showUnit" option-value="_id" option-label="name"
+                label="Select Unit Name" />
+              <q-input v-model.number="form.price" label="Price" required></q-input>
             </div>
             <div class="col">
-              <q-input
-                v-model="form.address"
-                label="Address"
-                required
-              ></q-input>
+              <q-input v-model.number="form.cost" label="Cost" required></q-input>
+              <q-input v-model="form.memo" label="memo" required></q-input>
               <div label="Status">
                 <fieldset>
-           
-                  <q-radio
-                    v-model="form.status"
-                    label="Active"
-                    val="active"
-                  ></q-radio>
-                  <q-radio
-                    v-model="form.status"
-                    label="Inactive"
-                    val="inactive"
-                  ></q-radio>
+
+                  <q-radio v-model="form.status" label="Active" val="Active"></q-radio>
+                  <q-radio v-model="form.status" label="Inactive" val="Inactive"></q-radio>
                 </fieldset>
               </div>
             </div>
@@ -52,7 +40,6 @@
           <q-btn color="red" v-if="showId" @click="remove">Remove</q-btn>
           <q-btn outline color="primary" @click="cancel">Cancel</q-btn>
         </div>
-
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -65,8 +52,9 @@ export default {
 <script setup>
 
 import Notify from '/imports/ui/lib/notify'
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useQuasar } from 'quasar';
+
 
 const $q = useQuasar()
 const props = defineProps({
@@ -82,13 +70,16 @@ const props = defineProps({
 const emit = defineEmits(['closed'])
 // data properties
 const refForm = ref()
-
+const showCat = ref([{}])
+const showUnit = ref([{}])
 const form = ref({
   name: '',
-    telephone: '',
-    address: '',
-    status: 'active',
-
+  catId:'',
+  unitId:'',
+  price:0,
+  cost:0,
+  memo: '',
+  status: 'Active'
 })
 const visableDialog = ref(false)
 
@@ -109,7 +100,7 @@ const rules = {
 }
 const checkExist = (selector) => {
   return new Promise((resolve, reject) => {
-    Meteor.call('checkVendorExist', { selector }, (err, res) => {
+    Meteor.call('checkItemExist', { selector }, (err, res) => {
       if (err) {
         reject(err)
       } else {
@@ -129,22 +120,36 @@ const submit = async () => {
     }
   }
 }
-
+// select category
+const selectCat = () => {
+  Meteor.call('ShowCat', (err, res) => {
+    showCat.value = res
+    console.log(res)
+  })
+}
+const selectUnit = () => {
+  Meteor.call('ShowUnit', (err, res) => {
+    showUnit.value = res
+    console.log(res)
+  })
+}
 const insert = () => {
-  Meteor.call('insertVendor', form.value, (err, res) => {
+  console.log(form.value)
+  Meteor.call('insertItem', form.value, (err, res) => {
+
     if (err) {
       console.log(err)
       Notify.error({ message: err.reason || err })
     } else {
       Notify.success({ message: 'Success' })
-      reset()
+
       cancel()
     }
   })
 }
 // update
 const update = () => {
-  Meteor.call('updateVendor', form.value, (err, res) => {
+  Meteor.call('updateItem', form.value, (err, res) => {
     if (err) {
       Notify.error({ message: err.reason || err })
 
@@ -165,7 +170,7 @@ const remove = () => {
       push: true,
     },
   }).onOk(() => {
-    Meteor.call('removeVendor', { id: props.showId }, (err, res) => {
+    Meteor.call('removeItem', { id: props.showId }, (err, res) => {
       if (err) {
         Notify.error({ message: err.reason || err })
       } else {
@@ -184,11 +189,13 @@ const reset = () => {
     delete form.value._id
   }
   form.value = {
-    name: '',
-    telephone: '',
-    address: '',
-    status: 'active',
-
+  name: "",
+  catId: "",
+  unitId: "",
+  price: 0,
+  cost: 0,
+  memo: '',
+  status: 'Active'
   }
   // form.value.status='active'
 }
@@ -197,18 +204,22 @@ const cancel = () => {
   reset()
   emit('closed', false)
 }
-watch(
-  () => props.dialog,
-  (value) => {
-    visableDialog.value = value
-    console.log(value)
-  }
-)
+onMounted(() => {
+  selectCat()
+  selectUnit()
+}),
+  watch(
+    () => props.dialog,
+    (value) => {
+      visableDialog.value = value
+      console.log(value)
+    }
+  )
 watch(
   () => props.showId,
   (value) => {
     if (value) {
-      Meteor.call('getVendorById', props.showId, (err, res) => {
+      Meteor.call('getItemById', props.showId, (err, res) => {
         form.value = res
         console.log(res)
       })

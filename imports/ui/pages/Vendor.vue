@@ -1,5 +1,6 @@
 <template>
   <q-table
+    v-model:pagination="pagination"
     bordered
     flat
     :rows="data"
@@ -7,6 +8,7 @@
     :filter="filter"
     :loading="loading"
     row-key="_id"
+    @request="onChangePagination"
   >
     <template #top>
       <div class="q-gutter-x-md">
@@ -36,17 +38,14 @@
 <VendorForm
   :dialog="visibleDialog"
   :show-id="showId"
-  
   @closed="handleClosedDialog"
 >
 </VendorForm>
-
 </template>
 <script setup>
 import { onMounted,ref } from 'vue';
 import Notify from '/imports/ui/lib/notify'
 import VendorForm from './VendorForm.vue';
-
 
 const columns = [
   {
@@ -54,8 +53,6 @@ const columns = [
     required: true,
     label: 'Vendor Name',
     align: 'left',
-    field: row => row.name,
-    format: val => `${val}`,
     sortable: true
   },
   { name: 'address', label: 'Address', field: 'address' },
@@ -92,7 +89,7 @@ const fetchData=()=>{
   if(filter.value){
     query['$or']=[
       {name:{$regex:exp,$options:'i'}},
-      {phone:{$regex:exp,$options:'i'}},
+      {telephone:{$regex:exp,$options:'i'}},
       {address:{$regex:exp,$options:'i'}},
     ]
   }
@@ -113,7 +110,6 @@ Meteor.call('findVendors', {...match},(err,res)=>{
 })
 
 }
-
 const onChangePagination=(val)=>{
   pagination.value=val.pagination
   fetchData()

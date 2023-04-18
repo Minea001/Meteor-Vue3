@@ -40,11 +40,57 @@ export default  [
     },
   },
   {
+    path: '/item',
+    name: 'Item',
+    component: () => import('./pages/Item.vue'),
+    meta: {
+      title: 'Item',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+  },
+  {
+    path: '/sale',
+    name: 'Sale',
+    component: () => import('./pages/Sale.vue'),
+    meta: {
+      title: 'sale',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+  },
+  {
+    path: '/saleform',
+    name: 'SaleForm',
+    component: () => import('./pages/SaleForm.vue'),
+    meta: {
+      title: 'SaleForm',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+  },
+
+  {
     path: '/vendor',
     name: 'vendor',
     component: () => import('./pages/Vendor.vue'),
     meta: {
       title: 'Vendor',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+    
+  },
+  {
+    path: '/employee',
+    name: 'employee',
+    component: () => import('./pages/admin-setting/Employee.vue'),
+    meta: {
+      title: 'Employee',
       breadcrumb: {
         parent: 'Dashboard',
       },
@@ -57,6 +103,28 @@ export default  [
   // },
 
   // NotFound
+  {
+    path: '/category',
+    name: 'category',
+    component: () => import('./pages/admin-setting/Category.vue'),
+    meta: {
+      title: 'Category',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+  },
+  {
+    path: '/unit',
+    name: 'unit',
+    component: () => import('./pages/admin-setting/Unit.vue'),
+    meta: {
+      title: 'Unit',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+  },
   {
     path: '/:catchAll(.*)',
     name: 'notFound',

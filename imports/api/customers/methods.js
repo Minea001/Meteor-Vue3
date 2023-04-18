@@ -32,6 +32,10 @@ export const insertCustomer1 = new ValidatedMethod({
 })
 
 Meteor.methods({
+  ShowCustomer(){
+    const doc=Customer.find().fetchAsync()
+    return doc
+},
   findCustomers({ selector, page, rowsPerPage }) {
     if (!Meteor.isServer) return false
     selector = selector || {}
