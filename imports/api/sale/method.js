@@ -1,117 +1,137 @@
-import SimpleSchema from "simpl-schema";
-import Item from "../Item/items";
+import SimpleSchema from 'simpl-schema'
+import Item from '../Item/items'
+import Unit from '../units/unit'
 import Sale from './sale'
+import SaleDetails from './details'
+import { saleSchema, saleDetailSchema } from './schema'
 
 Meteor.methods({
-    //for find vendor in paginate
-    findSale({selector,page,rowsPerPage}){
-        if(!Meteor.isServer) return false
-        selector=selector || {}
-        const limit =rowsPerPage===0? Number.MAX_SAFE_INTEGER:rowsPerPage
-        const skip=rowsPerPage * (page-1)
+  //for find vendor in paginate
+  findSale({ selector, page, rowsPerPage }) {
+    if (!Meteor.isServer) return false
+    selector = selector || {}
+    const limit = rowsPerPage === 0 ? Number.MAX_SAFE_INTEGER : rowsPerPage
+    const skip = rowsPerPage * (page - 1)
 
-        const data =Sale.aggregate([
-            {
-                $match:selector,
-            },
-            {
-                $skip:skip,
-            },            
-            {
-                $limit:limit,
-            },
-            {
-                $lookup:
-                {
-                    from: 'item',
-                    localField: 'unit',
-                    foreignField: '_id',
-                    as: 'doc_unitsale'
-                },
-            },
-            //look up for sale
-            {
-                $unwind:
-                {
-                    path: '$doc_unitsale',
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            
+    const data = Sale.aggregate([
+      {
+        $match: selector,
+      },
+      {
+        $sort:{tranDate:-1}
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+      {
+        $lookup: {
+          from: 'item',
+          localField: 'unit',
+          foreignField: '_id',
+          as: 'doc_unitsale',
+        },
+      },
+      //look up for sale
+      {
+        $unwind: {
+          path: '$doc_unitsale',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+    ])
+    const total = Sale.find(selector).count()
+    return { data, total }
+  },
+  checkSaleExist({ selector }) {
+    return Sale.findOne(selector)
+  },
+  // get sale by ID
+  getSaleById(id) {
+    const parent =  Sale.findOne({ _id: id })
+    const details = SaleDetails.find({saleId:id}).fetch()
 
-        ])
-        const total=Sale.find(selector).count()
-        return {data,total}
-    },
-    checkSaleExist({selector}){
-        return Sale.findOne(selector)
-    },
-    // get sale by ID
-    getSaleById(id){
-        return Sale.findOne({_id:id})
-    },
-    //Insert Item
-    insertSale(doc){
-        new SimpleSchema({
-            tranDate:Date,
-            employeeId:String,
-            customerId:String,
-            itemId:String,
-            memeo:String,
-            qty:Number,
-            price:Number,
-            unit:String,
-            amount:Number,
-            subTotal:Number,
-            discount:Number,
-            total:Number,
-            status:String,
-            statusDate:Object,
-            totalReceived:Number
-        }).validate(doc)
-        if(!Meteor.isServer) return false
-        try{
-            return Sale.insert(doc)
-        }catch(error){
-            console.log('error',error)
-            throw new Meteor.Error("Insert Sale Error ",error)
-        }
-    },
-    updateSale(doc){
-        new SimpleSchema({
-            _id:String,
-            tranDate:Date,
-            employeeId:String,
-            customerId:String,
-            itemId:String,
-            memeo:String,
-            qty:Number,
-            price:Number,
-            unit:String,
-            amount:Number,
-            subTotal:Number,
-            discount:Number,
-            total:Number,
-            status:String,
-            statusDate:Object,
-            totalReceived:Number
-        }).validate(doc)
-        if(!Meteor.isser) return false
-        try {
-            return Sale.update({_id:doc._id},{$set:doc})
-        } catch (error) {
-            throw new Meteor.Error("Update Sale Failed",error);
-        }
-    },
-    removeSale({id}){
-        new SimpleSchema({
-            _id:String
-        }).validate({id})
-        if(!Meteor.isServer) return false
-        try {
-            return Item.remove({_id:id})
-        } catch (error) {
-            throw new Meteor.Error('Remove Sale Error',error)
-        }
+    const units = Unit.find({}).fetch()
+    for(let i=0;i<details.length;i++){
+      const it=details[i]
+      const unit=units.find(u=>u._id==it.unitId)// id that get from unit==unitId of Item of index i
+      if(unit) it.unitLabel=unit.name //create Unit Label
+  }
+
+    return {doc:parent,itemDetails:details}
+  },
+  //Insert Item
+  insertSale({ doc, itemDetails }) {
+    new SimpleSchema({
+      doc: saleSchema,
+      itemDetails: Array,
+      'itemDetails.$': saleDetailSchema,
+    }).validate({ doc, itemDetails })
+    if (!Meteor.isServer) return false
+    try {
+      //  insert sale (parent)
+      const saleId = Sale.insert(doc)
+      // loop pick data for sale details
+      for (let i = 0; i < itemDetails.length; i++) {
+        const it = itemDetails[i]
+        it.tranDate = doc.tranDate
+        it.saleId = saleId
+
+        // insert to sale details (child)
+        SaleDetails.insert(it)
+      }
+
+      return saleId
+    } catch (error) {
+      console.log('error', error)
+      throw new Meteor.Error('Insert Sale Error ', error)
     }
+  },
+  updateSale({doc,itemDetails}) {
+    new SimpleSchema({
+      doc:saleSchema,
+      itemDetails:Array,
+      'itemDetails.$':saleDetailSchema
+    }).validate({doc,itemDetails})
+    if (!Meteor.isServer) return false
+    try {
+      const saleId = doc._id
+      //  update sale (parent)
+      const res = Sale.update({_id:saleId},{$set:doc})
+
+      // remove sale details
+      SaleDetails.remove({saleId})
+
+      // loop pick data for sale details
+      for (let i = 0; i < itemDetails.length; i++) {
+        const it = itemDetails[i]
+        it.tranDate = doc.tranDate
+        it.saleId = saleId
+
+        // insert to sale details (child)
+        SaleDetails.insert(it)
+      }
+
+      return res
+    } catch (error) {
+      throw new Meteor.Error('Update Sale Failed', error)
+    }
+  },
+  removeSale({ id }) {
+    new SimpleSchema({
+      id: String,
+    }).validate({ id })
+    if (!Meteor.isServer) return false
+    try {
+      // remove detail
+      SaleDetails.remove({saleId:id})
+      //  remove parent
+      const res = Sale.remove({_id:id})
+      return res
+    } catch (error) {
+      throw new Meteor.Error('Remove Sale Error', error)
+    }
+  },
 })

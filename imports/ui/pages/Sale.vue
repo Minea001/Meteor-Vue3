@@ -1,35 +1,53 @@
 <template>
-  <q-table v-model:pagination="pagination" bordered flat :rows="data" :columns="columns" :filter="filter"
-    :loading="loading" row-key="_id" @request="onChangePagination">
+  <q-table
+    v-model:pagination="pagination"
+    bordered
+    flat
+    :rows="data"
+    :columns="columns"
+    :filter="filter"
+    :loading="loading"
+    row-key="_id"
+    @request="onChangePagination"
+  >
     <template #top>
       <!-- For route to saleform -->
       <div class="q-gutter-x-md">
-        <q-btn  label="ADD NEW" color="pink">
-          <router-link exact :to="{ name: 'SaleForm' }" class="absolute full-width full-height"></router-link>
-        </q-btn>
-
+        <q-btn label="ADD NEW" color="pink" @click="addNew"> </q-btn>
       </div>
       <q-space />
-      <q-input v-model="filter" outlined dense debounce="300" placeholder="Search">
+      <q-input
+        v-model="filter"
+        outlined
+        dense
+        debounce="300"
+        placeholder="Search"
+      >
         <template #append>
-          <q-icon name="search"/>
+          <q-icon name="search" />
         </template>
       </q-input>
     </template>
-    <template #body-cell-name="props">
+
+    <template #body-cell-tranDate="props">
       <q-td :props="props">
-        <span @click="edit(props.row)" class="ra-text-link"></span>
+        <span class="ra-text-link" @click="edit(props.row)">
+          {{ formatDate(props.row.tranDate) }}
+        </span>
       </q-td>
     </template>
   </q-table>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
 import Notify from '/imports/ui/lib/notify'
+import moment from 'moment'
 
+const router = useRouter()
 
 const columns = [
-{ name: 'tranDate', label: 'Transition Date', field: 'tranDate' },
+  { name: 'tranDate', label: 'Transition Date', field: 'tranDate' },
   { name: 'employeeId', label: 'Employee Name', field: 'employeeId' },
   { name: 'customerId', label: 'Customer Name', field: 'customerId' },
   { name: 'subTotal', label: 'Sub Total', field: 'subTotal' },
@@ -37,11 +55,11 @@ const columns = [
   { name: 'total', label: 'Total', field: 'total' },
   { name: 'status', label: 'Status', field: 'status' },
   { name: 'statusDate', label: 'Status Date', field: 'total' },
-  { name: 'totalReceived', label: 'Total Recieve', field: 'totalReceived' }
+  { name: 'totalReceived', label: 'Total Recieve', field: 'totalReceived' },
 ]
 
 // declear data properties
-// to set dialog=false 
+// to set dialog=false
 const visibleDialog = ref(false)
 const loading = ref(false)
 const data = ref([])
@@ -55,6 +73,10 @@ const pagination = ref({
   rowsPerPage: 10,
   rowsNumber: 0,
 })
+
+const formatDate = (value) => {
+  return moment(value).format('DD/MM/YYYY')
+}
 
 // method
 const fetchData = () => {
@@ -76,7 +98,9 @@ const fetchData = () => {
     ]
   }
   const match = {
-    page, rowsPerPage, selector: query
+    page,
+    rowsPerPage,
+    selector: query,
   }
   Meteor.call('findSale', { ...match }, (err, res) => {
     if (err) {
@@ -85,26 +109,31 @@ const fetchData = () => {
     } else {
       data.value = res.data || []
       pagination.value.rowsNumber = res.total || 0
-      console.log(res)
-
     }
     loading.value = false
-    console.log(res)
   })
-
 }
 const onChangePagination = (val) => {
   pagination.value = val.pagination
   fetchData()
 }
+const addNew = () => {
+  router.push({
+    name: 'SaleForm',
+  })
+}
 //to edit
 const edit = (row) => {
-  visibleDialog.value = true
-  showId.value = row._id
+  // showId.value = row._id
+  router.push({
+    name: 'SaleForm',
+    query: {
+      id: row._id,
+    },
+  })
 }
 //life cycle
 onMounted(() => {
   fetchData()
-
 })
 </script>
