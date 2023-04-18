@@ -1,9 +1,9 @@
 import { Mongo } from "meteor/mongo";
 import SimpleSchema from "simpl-schema";
 
-const Sale=new Mongo.Collection('sales')
 
-Sale.schema=new SimpleSchema({
+export const saleSchema=new SimpleSchema({
+  _id:{type:String,optional:true},
     tranDate:Date,
     employeeId:String,
     customerId:String,
@@ -13,7 +13,8 @@ Sale.schema=new SimpleSchema({
     status:String,
     // Object
     statusDate:{
-      type:Object
+      type:Object,
+      optional:true
     },
     'statusDate.open':{
       type:Date,
@@ -27,10 +28,16 @@ Sale.schema=new SimpleSchema({
       type:Date,
       optional:true
     },
-    totalReceived:{
-      type:Number,
-      defaultValue:0,
-    }
 })
-Sale.attachSchema(Sale.schema)
-export default Sale
+
+export const saleDetailSchema=new SimpleSchema({
+  itemId:String,
+  memo:{
+    type:String,
+    optional:true
+  },
+  qty:Number,
+  price:Number,
+  unitId:String,
+  amount:Number,
+})
