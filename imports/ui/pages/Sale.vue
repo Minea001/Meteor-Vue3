@@ -48,13 +48,12 @@ const router = useRouter()
 
 const columns = [
   { name: 'tranDate', label: 'Transition Date', field: 'tranDate' },
-  { name: 'employeeId', label: 'Employee Name', field: 'employeeId' },
-  { name: 'customerId', label: 'Customer Name', field: 'customerId' },
+  { name: 'employeeId', label: 'Employee Name', field: 'empName' },
+  { name: 'customerId', label: 'Customer Name', field: 'cusName' },
   { name: 'subTotal', label: 'Sub Total', field: 'subTotal' },
   { name: 'discount', label: 'Discount', field: 'discount' },
   { name: 'total', label: 'Total', field: 'total' },
   { name: 'status', label: 'Status', field: 'status' },
-  { name: 'statusDate', label: 'Status Date', field: 'total' },
   { name: 'totalReceived', label: 'Total Recieve', field: 'totalReceived' },
 ]
 
@@ -78,7 +77,7 @@ const formatDate = (value) => {
   return moment(value).format('DD/MM/YYYY')
 }
 
-// method
+// method 
 const fetchData = () => {
   loading.value = true
   const { page, rowsPerPage } = pagination.value
@@ -118,6 +117,7 @@ const onChangePagination = (val) => {
   fetchData()
 }
 const addNew = () => {
+   //នៅពេលយើងចុចលើupdate វានឹង push ទៅកាន់ SaleFormតែអត់មានជាមួយid ទៅជាមួយទេ
   router.push({
     name: 'SaleForm',
   })
@@ -126,7 +126,9 @@ const addNew = () => {
 const edit = (row) => {
   // showId.value = row._id
   router.push({
+    //នៅពេលយើងចុចលើupdate វានឹង push ទៅកាន់ SaleFormតែមានជាមួយid ទៅដែរ
     name: 'SaleForm',
+    //name: 'SaleForm' is from 'SaleForm' គឺយើងយក​ Name របស់វាពី file router.js
     query: {
       id: row._id,
     },
@@ -134,6 +136,7 @@ const edit = (row) => {
 }
 //life cycle
 onMounted(() => {
+  // To show all data when Mount
   fetchData()
 })
 </script>

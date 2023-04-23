@@ -4,7 +4,7 @@ import SimpleSchema from "simpl-schema";
 const Sale=new Mongo.Collection('saleDetails')
 
 Sale.schema=new SimpleSchema({
-  saleId:String,
+    saleId:String,
     tranDate:Date,
     itemId:String,
     memo:{
@@ -15,6 +15,7 @@ Sale.schema=new SimpleSchema({
     price:Number,
     unitId:String,
     amount:Number,
+
 })
 Sale.attachSchema(Sale.schema)
 export default Sale

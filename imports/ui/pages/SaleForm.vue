@@ -4,7 +4,7 @@
       <h6 style="color: rebeccapurple"><strong>SALE FORM</strong></h6>
     </q-card-section>
     <q-card-section>
-      <q-form @submit.prevent>
+      <q-form @submit.prevent ref="refForm">
         <div class="row q-col-gutter-x-xl q-col-gutter-y-md">
           <div class="col-xs-12 col-md-12 col-lg-12">
             <div class="row q-col-gutter-y-sm">
@@ -37,6 +37,7 @@
                   dense
                   v-model="form.customerId"
                   :options="customerOpts"
+                  :rules="rules.customerId"
                   outlined
                   emit-value
                   map-options
@@ -50,6 +51,7 @@
                   dense
                   v-model="form.employeeId"
                   outlined
+                  :rules="rules.employeeId"
                   :options="employeeOpts"
                   emit-value
                   map-options
@@ -67,7 +69,7 @@
     <!-- Details -->
     <q-card-section>
       <SaleItemDetails
-        :rows="2"
+        :rows="2"  
         :items="initItemDetails"
         @item-changed="handleItemChanged"
       />
@@ -115,11 +117,13 @@ import { useRoute, useRouter } from 'vue-router'
 import Notify from '/imports/ui/lib/notify'
 import wrapCurrentTime from '/imports/ui/lib/wrap-current-time.js'
 import { ref, watch, onMounted, computed } from 'vue'
+// import for use prop in child
 import SaleItemDetails from '../components/SaleItemDetails.vue'
 import { useQuasar } from 'quasar'
 // To call moment package
 import moment from 'moment'
-
+// To declear variable to show dialog
+const $q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 
@@ -139,6 +143,29 @@ const form = ref({
   status: 'Open',
   statusDate: '',
 })
+//rule validate
+const rules={
+  employeeId:[
+      (v)=>!! v || 'Employee is required!',
+      async(value)=>{
+        let selector={
+          employeeId:value,
+         
+        }
+        
+      }
+  ],
+  customerId:[
+      (v)=>!! v || 'Customer is required!',
+      async(value)=>{
+        let selector={
+          customerId:value,
+     
+        }
+        
+      }
+  ]
+}
 const initItemDetails = ref([])
 let itemResultDetails = []
 
@@ -171,8 +198,11 @@ const getDataUpdate = () => {
   })
 }
 
-const saveForm = () => {
+const saveForm = async () => {
+  //for validate form
+  const valid = await refForm.value.validate()
   form.value.tranDate = wrapCurrentTime(moment(dateStr.value).toDate())
+  // To set statusDate=trandate
   form.value.statusDate = {
     open: form.value.tranDate,
   }
@@ -183,7 +213,10 @@ const saveForm = () => {
   }
 
   let methodName = 'insertSale'
-  if (showId.value) methodName = 'updateSale'
+  //if have id Call method updateSale
+  if(valid){
+    if (showId.value ) methodName = 'updateSale'
+  }
 
   Meteor.call(
     methodName,
@@ -196,6 +229,8 @@ const saveForm = () => {
         Notify.success({ message: 'Success' })
         if (showId.value) {
           router.go(-1)
+        }else{
+          router.go(-1)
         }
       }
     }
@@ -203,7 +238,17 @@ const saveForm = () => {
 }
 
 const remove = () => {
+  $q.dialog({
+        title: 'Comfirm',
+        message: `Do you want to remove?`,
+        cancel: true,
+        ok: {
+            push: true
+        },
+
+    }).onOk(() => {
   Meteor.call('removeSale', { id: showId.value }, (err, res) => {
+    
     if (err) {
       Notify.error({ message: err.reason || err })
     } else {
@@ -211,8 +256,11 @@ const remove = () => {
       cancel()
     }
   })
+})
 }
+
 const cancel = () => {
+  // turn back 1 router
   router.go(-1)
 }
 

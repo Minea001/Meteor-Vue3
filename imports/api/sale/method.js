@@ -41,6 +41,50 @@ Meteor.methods({
           preserveNullAndEmptyArrays: true,
         },
       },
+      // look up for Employee and Customer
+      {
+        $lookup:{
+          from:'employee',
+          localField:'employeeId',
+          foreignField:'_id',
+          as: 'doc_emp'
+        },
+      },
+      {
+        $unwind:{
+            path:'$doc_emp',
+            preserveNullAndEmptyArrays:true,
+        }
+      },
+      {
+        $lookup:{
+          from:'customers',
+          localField:'customerId',
+          foreignField:'_id',
+          as: 'doc_cus'
+        },
+      },
+      {
+        $unwind:{
+            path:'$doc_cus',
+            preserveNullAndEmptyArrays:true,
+        }
+      },
+      {
+        $project:{
+          tranDate:1,
+          empName:'$doc_emp.name',
+          cusName:'$doc_cus.name',
+          subTotal:1,
+          discount:1,
+          total:1,
+          status:1,
+          totalReceived:1
+
+          
+        }
+      }
+      
     ])
     const total = Sale.find(selector).count()
     return { data, total }
@@ -82,7 +126,6 @@ Meteor.methods({
         // insert to sale details (child)
         SaleDetails.insert(it)
       }
-
       return saleId
     } catch (error) {
       console.log('error', error)
@@ -104,7 +147,7 @@ Meteor.methods({
       // remove sale details
       SaleDetails.remove({saleId})
 
-      // loop pick data for sale details
+      // loop pick data for sale details 
       for (let i = 0; i < itemDetails.length; i++) {
         const it = itemDetails[i]
         it.tranDate = doc.tranDate

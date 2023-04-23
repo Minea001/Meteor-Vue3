@@ -84,19 +84,19 @@
         </td>
       </tr>
     </tbody>
-  </q-markup-table>
+  </q-markup-table>  
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-
+//declare in child 
+// Prop for bos data pi parent tov child
 const props = defineProps({
   rows: Number,
-  items: Array,
+  items: Array, 
 })
 
 const emit = defineEmits(['itemChanged'])
-
 // opts
 const itemOpts = ref([])
 const listForm = ref([])
