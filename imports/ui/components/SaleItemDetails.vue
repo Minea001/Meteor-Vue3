@@ -70,16 +70,20 @@
             v-if="index == listForm.length - 1"
             @click="add"
             style="font-weight: bold; margin-right: 5px"
-            >Add</q-btn
-          >
-          <q-btn
+            round
+            >
+            <i class="fa-solid fa-plus"></i>
+        </q-btn>
+       <q-btn
+          round
             dense
-            color="red"
+            color="negative"
+            size="md"
             @click="remove(index)"
             style="font-weight: bold; margin-right: 5px"
-            v-if="listForm.length > 1"
+            v-if="listForm.length > 1"   
           >
-            Del
+          <i class="fa-solid fa-minus"></i>
           </q-btn>
         </td>
       </tr>
@@ -137,6 +141,8 @@ const remove = (index) => {
 watch(
   () => props.items,
   (items) => {
+    //set default =[]
+    listForm.value = []
     if (items.length) {
       // For update form
       listForm.value = items

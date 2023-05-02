@@ -27,7 +27,7 @@ export default [
   },
   {
     title: 'Purchase',
-    route:{name: ''},
+    route:{name: 'Purchase'},
     icon: 'fa-solid fa-bag-shopping',
   },
   {

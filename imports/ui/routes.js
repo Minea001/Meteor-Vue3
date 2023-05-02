@@ -72,6 +72,28 @@ export default  [
       },
     },
   },
+  {
+    path: '/purchase',
+    name: 'Purchase',
+    component: () => import('./pages/Purchase.vue'),
+    meta: {
+      title: 'Purchase',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+  },
+  {
+    path: '/purchase/purchaseform',
+    name: 'purchaseform',
+    component: () => import('./pages/PurchaseForm.vue'),
+    meta: {
+      title: 'PurchaseForm',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+  },
 
   {
     path: '/vendor',

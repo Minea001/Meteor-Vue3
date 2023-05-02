@@ -1,9 +1,12 @@
 import {ValidateMethod} from 'meteor/mdg:validated-method'
 import SimpleSchema from 'simpl-schema'
-import { validate } from 'vee-validate'
 import Vendors from './vendors'
 
 Meteor.methods({
+    ShowVendor(){
+        const doc=Vendors.find().fetchAsync()
+        return doc
+    },
     // insert data
     insertVendor(doc){
         new SimpleSchema({
@@ -49,6 +52,7 @@ Meteor.methods({
         const total=Vendors.find(selector).count()
         return {data, total}
     },
+
     // Check existing 
     checkVendorExist({selector}){
         return Vendors.findOne(selector)

@@ -6,7 +6,7 @@ import SaleDetails from './details'
 import { saleSchema, saleDetailSchema } from './schema'
 
 Meteor.methods({
-  //for find vendor in paginate
+  //for find sale in paginate
   findSale({ selector, page, rowsPerPage }) {
     if (!Meteor.isServer) return false
     selector = selector || {}
@@ -80,8 +80,6 @@ Meteor.methods({
           total:1,
           status:1,
           totalReceived:1
-
-          
         }
       }
       
@@ -106,7 +104,7 @@ Meteor.methods({
 
     return {doc:parent,itemDetails:details}
   },
-  //Insert Item
+  //Insert Sale
   insertSale({ doc, itemDetails }) {
     new SimpleSchema({
       doc: saleSchema,
@@ -125,6 +123,7 @@ Meteor.methods({
 
         // insert to sale details (child)
         SaleDetails.insert(it)
+
       }
       return saleId
     } catch (error) {
@@ -132,6 +131,7 @@ Meteor.methods({
       throw new Meteor.Error('Insert Sale Error ', error)
     }
   },
+
   updateSale({doc,itemDetails}) {
     new SimpleSchema({
       doc:saleSchema,

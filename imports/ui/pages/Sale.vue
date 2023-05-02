@@ -59,10 +59,10 @@ const columns = [
 
 // declear data properties
 // to set dialog=false
-const visibleDialog = ref(false)
+// const visibleDialog = ref(false)
 const loading = ref(false)
 const data = ref([])
-const showId = ref('')
+// const showId = ref('')
 const filter = ref('')
 //paginatte
 const pagination = ref({
