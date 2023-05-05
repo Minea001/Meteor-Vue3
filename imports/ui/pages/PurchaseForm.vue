@@ -45,25 +45,25 @@
     </q-card-section>
 
     <q-card-section>
-      <div class="row q-col-gutter-x-xl q-col-gutter-y-md">
-        <div class="col-xs-4 col-md-2 col-lg-2">
-          <div class="row q-col-gutter-y-sm">
-            <div class="col-12">
-              <text-h5> Sub Total: {{ form.subTotal }} </text-h5>
-            </div>
-            <div class="col-12">
-              <div class="row">
-                <div class="col-6">Discount ($) :</div>
-                <div class="col-6">
-                  <q-input outlined dense v-model.number="form.discount" />
-                </div>
-              </div>
-            </div>
-            <div class="col-12">
+      <div class="q-pa-md" style="max-width: 350px">
+        <q-list bordered separator>
+          <q-item clickable v-ripple>
+            <q-item-section> Sub Total: {{ form.subTotal }} </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple>
+            <q-item-section>
+              <q-item-label>Discount ($) :</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-input outlined dense v-model.number="form.discount" />
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple>
+            <q-item-section>
               <text-h5> Total: {{ form.total }} </text-h5>
-            </div>
-          </div>
-        </div>
+            </q-item-section>
+          </q-item>
+        </q-list>
       </div>
       <div class="row q-col-gutter-x-xl q-col-gutter-y-md">
         <div class="col-12">
@@ -193,7 +193,7 @@ const saveForm = async (type) => {
         } else {
           //set item child form=[]
           initItemDetails.value = []
-          itemResultDetails=[]
+          itemResultDetails = []
           form.value = {
             tranDate: '',
             employeeId: '',

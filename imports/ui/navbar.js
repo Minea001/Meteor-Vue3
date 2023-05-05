@@ -17,7 +17,7 @@ export default [
   },
   {
     title: 'Receipt',
-    route:{name: ''},
+    route:{name: 'Reciept'},
     icon:"fa-solid fa-file-invoice"
   },
   {

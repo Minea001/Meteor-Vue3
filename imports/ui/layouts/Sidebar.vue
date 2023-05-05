@@ -4,7 +4,7 @@
     <q-toolbar class="app-sidebar-header shadow-none absolute-top">
       <img src="/images/rabbit.png" width="30" height="30" class="q-ml-xs" />
       <q-toolbar-title class="text-white text-subtitle1 text-weight-medium">
-        Rabbit TC
+       SALE SYSTEM
       </q-toolbar-title>
     </q-toolbar>
 

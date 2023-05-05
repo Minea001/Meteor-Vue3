@@ -62,6 +62,28 @@ export default  [
     },
   },
   {
+    path: '/reciept',
+    name: 'Reciept',
+    component: () => import('./pages/Reciept.vue'),
+    meta: {
+      title: 'reciept',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+  },
+  {
+    path: '/recieptform',
+    name: 'RecieptForm',
+    component: () => import('./pages/RecieptForm.vue'),
+    meta: {
+      title: 'Reciept Form',
+      breadcrumb: {
+        parent: 'Reciept',
+      },
+    },
+  },
+  {
     path: '/saleform',
     name: 'SaleForm',
     component: () => import('./pages/SaleForm.vue'),

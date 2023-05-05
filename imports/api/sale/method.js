@@ -6,6 +6,10 @@ import SaleDetails from './details'
 import { saleSchema, saleDetailSchema } from './schema'
 
 Meteor.methods({
+  ShowSale(){
+    const doc=Sale.find().fetchAsync()
+    return doc
+  },
   //for find sale in paginate
   findSale({ selector, page, rowsPerPage }) {
     if (!Meteor.isServer) return false

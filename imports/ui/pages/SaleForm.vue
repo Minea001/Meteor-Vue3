@@ -89,7 +89,7 @@ import { useRoute, useRouter } from 'vue-router'
 import Notify from '/imports/ui/lib/notify'
 import wrapCurrentTime from '/imports/ui/lib/wrap-current-time.js'
 import { ref, watch, onMounted, computed } from 'vue'
-// import for use prop in child
+// import for use prop in child 
 import SaleItemDetails from '../components/SaleItemDetails.vue'
 import { useQuasar } from 'quasar'
 // To call moment package
