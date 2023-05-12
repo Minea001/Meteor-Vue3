@@ -46,10 +46,10 @@ const filter=ref('')
 const router=useRouter()
 
 const columns=[
-{name:'tranDate',label:'Transition Date',field:'tranDate'},
+  {name:'tranDate',label:'Transition Date',field:'tranDate'},
   {name:'customerId',label:'Customer Name',field:'customerId'},
   {name:'employeeId',label:'Employee Name',field:'employeeId'},
-  {name:'saleId',label:'Sale ID',field:'saleId'},
+  // {name:'saleId',label:'Sale ID',field:'saleId'},
   {name:'recieve',label:'Recieve',field:'recieve'},
   {name:'discount',label:'Discount',field:'discount'},
   {name:'memo',label:'Memo',field:'memo'},

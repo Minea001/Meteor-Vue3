@@ -2,15 +2,46 @@ import SimpleSchema from 'simpl-schema'
 import Item from '../Item/items'
 import Unit from '../units/unit'
 import Sale from './sale'
+import Customer from '../customers/customers'
 import SaleDetails from './details'
 import { saleSchema, saleDetailSchema } from './schema'
 
 Meteor.methods({
-  ShowSale(){
-    const doc=Sale.find().fetchAsync()
-    return doc
+  //function show Sale Id
+  getSaleOpts({selector}){
+    
+   const data=Sale.aggregate([
+    {
+        $match:selector  
+    },
+    {
+      //sort by tranDate
+        $sort:{tranDate:1}  
+    },
+    {
+        $project:{
+            tranDateStr: { $dateToString: { format: "%Y-%m-%d", date: "$tranDate" } },
+            total:{
+              //to project field total=total-recieve
+                $subtract:["$total","$totalReceived"]
+            }
+        }
+    },
+    // for project to show as Label in select Sale Id (EX: 12/5/2023-170) but it store as id
+    //balance=$total means we want to show value os total money in textbox 'open'
+    {
+      $project:{
+          value:'$_id',
+          label:{$concat:['$tranDateStr',' - ',{ $toString: "$total" },]},
+          balance :'$total'
+      }
+  }  
+])
+
+  return data;
   },
   //for find sale in paginate
+
   findSale({ selector, page, rowsPerPage }) {
     if (!Meteor.isServer) return false
     selector = selector || {}

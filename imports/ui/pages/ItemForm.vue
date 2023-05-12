@@ -142,7 +142,6 @@ const insert = () => {
       Notify.error({ message: err.reason || err })
     } else {
       Notify.success({ message: 'Success' })
-
       cancel()
     }
   })

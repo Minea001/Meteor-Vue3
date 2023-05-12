@@ -55,8 +55,6 @@
        
         </q-item-section>
         <q-item-section>
- 
-       
              <q-input outlined dense v-model.number="form.discount"/>
          
         </q-item-section>

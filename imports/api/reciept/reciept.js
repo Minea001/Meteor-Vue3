@@ -8,7 +8,10 @@ Reciept.schema=new SimpleSchema({
     saleId:String,
     recieve:Number,
     discount:Number,
-    memo:String
+    memo:{
+        optional:true,
+        type:String
+    }
 })
 Reciept.attachSchema(Reciept.schema)
 export default Reciept
