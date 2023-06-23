@@ -41,7 +41,7 @@
           </div>
         </q-card-section>
         <div class="text-right q-pb-md q-pr-md">
-          <q-btn label="Submit" color="primary" />
+          <q-btn @click="filterdata()" label="Submit" color="primary" />
         </div>
       </q-form>
     </q-card>
@@ -126,42 +126,7 @@ const columns = ref([
 ])
 const checkedColumns = ref(['gender', 'address'])
 const reportData = ref([
-  {
-    code: '001',
-    name: 'Ling',
-    gender: 'M',
-    address: 'PP',
-  },
-  {
-    code: '002',
-    name: 'Ling2',
-    gender: 'M',
-    address: 'PP',
-  },
-  {
-    code: '003',
-    name: 'Ling3',
-    gender: 'M',
-    address: 'PP',
-  },
-  {
-    code: '004',
-    name: 'Ling4',
-    gender: 'M',
-    address: 'PP',
-  },
-  {
-    code: '005',
-    name: 'Ling5',
-    gender: 'M',
-    address: 'PP',
-  },
-  {
-    code: '006',
-    name: 'Ling6',
-    gender: 'M',
-    address: 'PP',
-  },
+ 
 ])
 const cssText = ref(``)
 const form = ref({
@@ -174,6 +139,10 @@ const changeColumn = (val) => {
 }
 const showMoreHeader = (field) => {
   return includes(checkedColumns.value, field)
+}
+// for filter data
+const filterdata=()=>{
+
 }
 </script>
 <style lang="scss" scoped>

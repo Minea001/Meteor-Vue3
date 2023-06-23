@@ -32,7 +32,7 @@ export default [
   },
   {
     title: 'Payment',
-    route:{name: ''},
+    route:{name: 'Payment'},
     icon: 'fa-solid fa-money-check-dollar',
   },
 

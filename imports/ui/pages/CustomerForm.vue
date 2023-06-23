@@ -35,17 +35,18 @@
                   </div>
                   <div class="col-12">
                     <validate-field
-                      v-slot="{ value, field }"
+                      v-slot="{ value, field, errorMessage }"
                       v-model="form.telephone"
                       name="telephone"
                     >
                       <q-input
                         :model-value="value"
-                        label="Telephone"
-                        :v-bind="field"
                         outlined
                         dense
-                        required
+                        label="Telephone *"
+                        v-bind="field"
+                        :error="!!errorMessage"
+                        :error-message="errorMessage"
                       ></q-input>
                     </validate-field>
                   </div>
@@ -131,9 +132,7 @@ const props = defineProps({
     default: null,
   },
 })
-
 const emit = defineEmits(['closed'])
-
 const initForm = {
   name: '',
   address: '',

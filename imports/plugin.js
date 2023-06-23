@@ -1,7 +1,7 @@
 import router from './router'
 import store from './store'
 // Quasar
-import { Quasar, AppFullscreen, Notify, Dialog, LoadingBar } from 'quasar'
+import { Quasar, AppFullscreen, Notify, Dialog, LoadingBar,Loading } from 'quasar'
 
 // Import icon libraries
 // import '@quasar/extras/roboto-font/roboto-font.css'
@@ -21,6 +21,7 @@ export default (app) => {
       Notify,
       Dialog,
       LoadingBar,
+      Loading
     },
   })
 }

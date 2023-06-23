@@ -1,12 +1,57 @@
 import SimpleSchema from "simpl-schema";
-import Item from '../Item/items'
-import Unit from '../units/unit'
 import Purchase from './purchase'
 import PurchaseDetail from './details'
+import Payment from "../payment/payment";
 // import schema
 import { purchaseSchema, purchaseDetailSchema } from './schema'
 
 Meteor.methods({
+  // To get purchase option
+  getPurchaseOpts({selector,paymentId}){
+    paymentId=paymentId || ''
+    const data=Purchase.aggregate([
+      {
+        $match:selector
+      },
+      {
+        //sort trandate
+        $sort:{tranDate:1}
+      },
+      {
+        $project:{
+          tranDateStr:{$dateToString: { format: "%Y-%m-%d",date:"$tranDate"}},
+          total:{
+            //total=total-totalPaid
+            //totalPad is in schema
+            $subtract:["$total","$totalPaid"]
+          }
+        }
+      },
+      // project to show in option
+      {
+        $project: {
+          value: '$_id',
+          label: { $concat: ['$tranDateStr', ' - ', { $toString: "$total" },] },
+          balance: '$total'
+        }
+      }
+    ])
+    //for update and show invoice on purchaseOpts
+    if(paymentId){
+      const paymentDoc=Payment.findOne({_id:paymentId})
+      console.log('paymentDoc',paymentDoc)
+      const {purchaseId,paid}=paymentDoc
+
+      const doc=data.find(it=>it.value==purchaseId)
+      if(doc){
+        doc.balance+=paid
+        const res=doc.label.split(" ")
+        res[res.length-1]=doc.balance
+        doc.label=res.join(" ")
+      }
+    }
+    return data;
+  },
   //for find purchase in paginate
   findPurchase({ selector, page, rowsPerPage }) {
     if (!Meteor.isServer) return false

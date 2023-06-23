@@ -26,9 +26,8 @@
               </div>
               <div class="col-6" style="padding-right: 10px">
                 <q-label>Customer*</q-label>
-                <q-select  dense v-model="form.customerId" :options="customerOpts"
-                  :rules="rules.customerId" outlined emit-value map-options option-value="_id" option-label="name"
-                  label="Customer *" />
+                <q-select dense v-model="form.customerId" :options="customerOpts" :rules="rules.customerId" outlined
+                  emit-value map-options option-value="_id" option-label="name" label="Customer *" />
               </div>
 
             </div>
@@ -43,8 +42,8 @@
               </div>
               <div class="col-6" style="padding-right: 10px">
                 <q-label>Sale ID*</q-label>
-                <q-select  dense v-model="form.saleId" :options="saleOpts" :rules="rules.saleId"
-                  outlined emit-value map-options option-value="value" option-label="label" label="Sale ID *" />
+                <q-select dense v-model="form.saleId" :options="saleOpts" :rules="rules.saleId" outlined emit-value
+                  map-options option-value="value" option-label="label" label="Sale ID *" />
               </div>
 
             </div>
@@ -54,13 +53,12 @@
             <div class="row q-col-gutter-y-sm">
               <div class="col-6" style="padding-right: 10px">
                 <q-label>Recieve*</q-label>
-                <q-input
-                  @change="handleReceiveChange"
-                dense outlined placeholder="Recieve*" :rules="rules.recieve" v-model.number="form.recieve"></q-input>
+                <q-input @change="handleReceiveChange" dense outlined placeholder="Recieve*" :rules="rules.recieve"
+                  v-model.number="form.recieve"></q-input>
               </div>
               <div class="col-6" style="padding-right: 10px">
                 <q-label>Discount</q-label>
-                <q-input dense outlined placeholder="Discount" v-model="form.discount"></q-input>
+                <q-input dense outlined placeholder="Discount" v-model.number="form.discount"></q-input>
               </div>
 
             </div>
@@ -86,7 +84,7 @@
       <div class="row q-col-gutter-x-xl q-col-gutter-y-md">
         <div class="col-12">
           <br>
-          <q-btn color="pink" label="Save Close"  @click="saveForm('close')"/>
+          <q-btn color="pink" label="Save Close" @click="saveForm('close')" />
           <q-btn class="q-ml-sm" v-if="!showId" color="warning" label="Save New" @click="saveForm" />
           <q-btn v-if="showId" class="q-ml-sm" color="red" label="Remove" @click="remove" />
           <q-btn class="q-ml-sm" color="secondary" label="Cancel" @click="cancel" />
@@ -95,14 +93,16 @@
     </q-card-section>
   </q-card>
 </template>
+
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
 import Notify from '/imports/ui/lib/notify'
 import wrapCurrentTime from '/imports/ui/lib/wrap-current-time.js'
-import { ref, watch, onMounted, computed } from 'vue'
+import { ref, watch, onMounted, computed, nextTick } from 'vue'
 import { useQuasar } from 'quasar'
 // To call moment package
 import moment from 'moment'
+const $q = useQuasar()
 const route = useRoute()
 const router = useRouter()
 
@@ -112,6 +112,8 @@ const employeeOpts = ref([{}])
 const customerOpts = ref([{}])
 const saleOpts = ref([{}])
 
+const firstShow = ref(false)
+const firstTmpSaleId = ref(false)
 const showId = ref(route.query.id)
 const openAmount = ref(0)
 const form = ref({
@@ -158,47 +160,64 @@ const getCustomerOpts = () => {
     customerOpts.value = res
   })
 }
-//To show value of amount in open textbox
-//It watch to get value from select list of saleId
-watch(() => form.value.saleId, () => {
+// to create method for show amount in open
+const getOpenAmount=()=>{
   const doc = saleOpts.value.find(it => it.value == form.value.saleId)
   if (doc) {
     openAmount.value = doc.balance
   }
+}
+//To show value of amount in open textbox
+//It watch to get value from select list of saleId
+watch(() => form.value.saleId, () => {
+  getOpenAmount()
 })
 //To set validate in textbox 'recieve' if it greater that open amount so set value to equal open amount
 //this method call in recieve textbox
-const handleReceiveChange = ()=>{
-  if(form.value.recieve>openAmount.value){
+const handleReceiveChange = () => {
+  if (form.value.recieve > openAmount.value) {
     form.value.recieve = openAmount.value
   }
 }
-
 const getSaleOpts = () => {
-  form.value.saleId = ''
-//set when start អោយតម្លៃវាស្មើទទេដើម្បីពេលយើងប្ដូរ customer ថ្មីវាclear textbox អោយយើងរើសថ្មី
+  //set when start អោយតម្លៃវាស្មើទទេដើម្បីពេលយើងប្ដូរ customer ថ្មីវាclear textbox អោយយើងរើសថ្មី
   saleOpts.value = []
   const date = moment(dateStr.value).endOf('day').toDate()
   const selector = {
-  //less than tranDate
+    //less than tranDate
     tranDate: {
       $lte: date
     },
     customerId: form.value.customerId,
     //យកstatus ណាដែលមិនស្មើclose
-    status: { $ne: 'Closed' } //if not equal close
+    $or: [
+      { status: { $ne: 'Closed' } }
+    ] //if not equal close
+  }
+  if (showId.value) {
+    selector.$or.push(
+      
+      { _id: firstTmpSaleId.value }
+    )
   }
   //accessing method 'getSaleOpts'
-  Meteor.call('getSaleOpts', { selector }, (err, res) => {
+  Meteor.call('getSaleOpts', { selector,receiptId:showId.value }, (err, res) => {
     saleOpts.value = res || []
+    getOpenAmount()
   })
 }
 //watch on date value
 watch(() => dateStr.value, () => {
+  if (!firstShow.value) {
+    form.value.saleId = ''
+  }
   getSaleOpts()
 })
 //watch on customer value
 watch(() => form.value.customerId, () => {
+  if (!firstShow.value) {
+    form.value.saleId = ''
+  }
   getSaleOpts()
 })
 //method save form
@@ -222,6 +241,7 @@ const saveForm = (type) => {
         if (type == 'close' || showId.value) {
           router.go(-1)
         } else {
+          firstTmpSaleId.value = ''
           form.value = {
             tranDate: '',
             employeeId: '',
@@ -236,6 +256,27 @@ const saveForm = (type) => {
     }
   )
 }
+const getDataUpdate = () => {
+  $q.loading.show()
+  // set value to true/ default =false
+  firstShow.value = true
+  Meteor.call('getReceiptById', showId.value, (err, res) => {
+    if (err) {
+      console.log('err', err)
+    } else {
+      //
+      firstTmpSaleId.value = res.saleId
+      dateStr.value = moment(res.tranDate).format('DD/MMM/YYYY')
+      form.value = res
+    }
+
+    setTimeout(() => {
+      firstShow.value = false
+      console.log('done')
+      $q.loading.hide()
+    },10)
+  })
+}
 const remove = () => {
   $q.dialog({
     title: 'Comfirm',
@@ -244,12 +285,10 @@ const remove = () => {
     ok: {
       push: true
     },
-
   }).onOk(() => {
     Meteor.call('removeReciept', { id: showId.value }, (err, res) => {
       if (err) {
         Notify.error({ message: err.reason || err })
-
       } else {
         Notify.success({ message: 'Success' })
         cancel()
@@ -260,7 +299,9 @@ const remove = () => {
 onMounted(() => {
   getEmployeeOpts()
   getCustomerOpts()
-
+  if (showId.value) {
+    getDataUpdate()
+  }
 })
 const cancel = () => {
   router.go(-1)

@@ -116,7 +116,28 @@ export default  [
       },
     },
   },
-
+  {
+    path: '/payment',
+    name: 'Payment',
+    component: () => import('./pages/Payment.vue'),
+    meta: {
+      title: 'Payment',
+      breadcrumb: {
+        parent: 'Dashboard',
+      },
+    },
+  },
+  {
+    path: '/paymentform',
+    name: 'PaymentForm',
+    component: () => import('./pages/PaymentForm.vue'),
+    meta: {
+      title: 'Payment Form',
+      breadcrumb: {
+        parent: 'Payment',
+      },
+    },
+  },
   {
     path: '/vendor',
     name: 'vendor',

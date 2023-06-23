@@ -8,10 +8,11 @@
     :loading="loading"
     row_key="_id"
     @request="onChangePagination"
+    v-model:pagination="pagination"
    >
     <template #top>
         <div class="q-gutter-x-md">
-            <q-btn label="Add" color="pink" @click="add()"></q-btn>
+            <q-btn label="Add New" color="pink" @click="add()"></q-btn>
         </div>
         <q-space/>
         <q-input
@@ -25,8 +26,8 @@
             <q-icon name="search" />
         </template>
     </q-input>
+  
     </template>
-
     <template #body-cell-tranDate="props">
         <q-td :props="props">
         <span class="ra-text-link" @click="edit(props.row)">
@@ -41,7 +42,6 @@ import { useRouter } from 'vue-router';
 import { onMounted,ref } from 'vue';
 import Notify from '/imports/ui/lib/notify'
 import moment from 'moment'
-
 const filter=ref('')
 const router=useRouter()
 
@@ -56,6 +56,7 @@ const columns=[
 ]
 const loading =ref(false)
 const data=ref([])
+
 //pagination
 const pagination=ref({
   sortBy:'name',
@@ -101,13 +102,12 @@ const fetchData=()=>{
   })
 }
 const onChangePagination=(val)=>{
-  pagination.value=val.pagination
+  pagination.value=val.pagination 
   fetchData()
 }
 const add=()=>{
   router.push({
     name:'RecieptForm',
-
   })
 }
 const edit=(row)=>{

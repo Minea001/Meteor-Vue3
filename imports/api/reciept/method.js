@@ -1,5 +1,4 @@
 import SimpleSchema from "simpl-schema";
-import Item from '../Item/items'
 import Reciept from "../reciept/reciept";
 import checkSaleStatus from '../sale/checkSaleStatus'
 
@@ -55,7 +54,7 @@ Meteor.methods({
                {
              $project:{
                 tranDate:1,
-                customerId:'$doc_emp.name',
+                customerId:'$doc_cus.name',
                 employeeId:'$doc_emp.name',
                 saleId:'$doc_sale.tranDate',
                 recieve:1,
@@ -73,7 +72,8 @@ Meteor.methods({
     },
     //get reciept by Id
     getReceiptById(id) {
-        return Reciept.findOne({ _id: id })
+       const reciept= Reciept.findOne({ _id: id })
+       return reciept
     },
     //insert reciept
     insertReciept({ doc }) {
@@ -84,14 +84,16 @@ Meteor.methods({
             saleId: String,
             recieve: Number,
             discount: Number,
-            memo: String
+            memo: {
+                type:String,
+                optional:true
+            }
         }).validate(doc)
         if (!Meteor.isServer) return false
         try {
             const id = Reciept.insert(doc)
             // check status sale
             checkSaleStatus({ saleId: doc.saleId })
-
             return id
         } catch (error) {
             console.log('error', error)
@@ -107,12 +109,15 @@ Meteor.methods({
             saleId: String,
             recieve: Number,
             discount: Number,
-            memo: String
+            memo: {
+                type:String,
+                optional:true
+            }
         }).validate(doc)
         if (!Meteor.isServer) return false
         try {
-            const prevDoc = Reciept.findOne({ _id: id })
-            const res = Reciept.update({ _id: id }, { $set: doc })
+            const prevDoc = Reciept.findOne({ _id: doc._id })
+            const res = Reciept.update({ _id: doc._id }, { $set: doc })
 
             // check status 
             if (prevDoc.saleId != doc.saleId) {
@@ -129,7 +134,7 @@ Meteor.methods({
     removeReciept({ id }) {
         new SimpleSchema({
             id: String,
-        }).validate(doc)
+        }).validate({id})
         if (!Meteor.isServer) return false
         try {
             const prevDoc = Reciept.findOne({ _id: id })
@@ -140,7 +145,7 @@ Meteor.methods({
 
             return res
         } catch (error) {
-            throw new Meteor.Error('Remove Reciept erroe', error)
+            throw new Meteor.Error('Remove Reciept error', error)
         }
     }
 

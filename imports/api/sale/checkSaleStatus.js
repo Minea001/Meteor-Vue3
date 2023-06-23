@@ -24,9 +24,7 @@ const checkSaleStatus = ({ saleId }) => {
                 }
             }
         ])
-
         receiptDoc = receiptDoc[0] || { totalReceived: 0 }
-
         // Get sale
         const saleDoc = Sale.findOne({ _id: saleId })
 
