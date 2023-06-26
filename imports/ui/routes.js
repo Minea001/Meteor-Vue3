@@ -148,7 +148,7 @@ export default  [
         parent: 'Dashboard',
       },
     },
-    
+
   },
   {
     path: '/employee',
@@ -222,6 +222,16 @@ export default  [
       },
     },
   },
-
+  {
+    path: '/sale-transactions',
+    name: 'SaleTransactions',
+    component: () => import('./reports/SaleTransactions.vue'),
+    meta: {
+      title: 'SaleTransactions',
+      breadcrumb: {
+        parent: 'Report',
+      },
+    },
+  },
 
 ]
