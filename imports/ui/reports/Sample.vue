@@ -25,7 +25,7 @@
                       </q-date>
                     </q-popup-proxy>
                   </q-icon>
-                </template>
+                </template> 
               </q-input>
             </div>
             <div class="col-xs-12 col-md-6 col-lg-6">
@@ -126,7 +126,7 @@ const columns = ref([
 ])
 const checkedColumns = ref(['gender', 'address'])
 const reportData = ref([
- 
+        
 ])
 const cssText = ref(``)
 const form = ref({

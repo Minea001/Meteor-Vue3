@@ -1,1 +1,13 @@
 import './sale-transactions'
+import './sale-transactions-detail'
+import './sale-transactions-detail-by-emp'
+import './open-invoice'
+import './receipt-detail-by-emp'
+import './receipt-summary-by-emp'
+import './purchase-transactions'
+import './purchase-transactions-detail'
+import './purchase-transactions-detail-by-emp'
+import './open-payment'
+import './payment-detail-by-emp'
+import './payment-summary-by-emp'
+

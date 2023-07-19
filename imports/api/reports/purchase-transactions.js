@@ -1,16 +1,16 @@
-import Sale from '../sale/sale'
+import Purchase from '../purchase/purchase'
 Meteor.methods({
-  saleTransactions({ reportDate, customerIds = [], employeeIds = [] }) {
+  purchaseTransactions({ reportDate, vendorIds = [], employeeIds = [] }) {
     const selector = {
       tranDate: {
         $gte: reportDate[0],
         $lte: reportDate[1],
       },
     }
-    if (customerIds.length) {
-      // customerIds = [...]
-      selector.customerId = {
-        $in: customerIds,
+    if (vendorIds.length) {
+      // vendorIds = [...]
+      selector.vendorId = {
+        $in: vendorIds,
       }
     }
     if (employeeIds.length) {
@@ -36,20 +36,20 @@ Meteor.methods({
       },
       {
         $lookup: {
-          from: 'customers',
-          localField: 'customerId',
+          from: 'vendors',
+          localField: 'vendorId',
           foreignField: '_id',
-          as: 'cusDoc',
+          as: 'venDoc',
         },
       },
       {
-        $unwind: { path: '$cusDoc', preserveNullAndEmptyArrays: true },
+        $unwind: { path: '$venDoc', preserveNullAndEmptyArrays: true },
       },
       {
         $project: {
           tranDate: 1,
           empName: '$empDoc.name',
-          cusName: '$cusDoc.name',
+          venName: '$venDoc.name',
           subTotal: 1,
           discount: 1,
           total: 1,
@@ -68,7 +68,7 @@ Meteor.methods({
         },
       },
     ]
-    const data = Sale.aggregate(pipeline) // => [{_id:null,details:[],grandTotal:0]
+    const data = Purchase.aggregate(pipeline) // => [{_id:null,details:[],grandTotal:0]
     const {
       details= [],
       grandTotal = 0,

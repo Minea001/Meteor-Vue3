@@ -116,7 +116,8 @@ const initForm = ref({
 })
 // Method
 const getItemOpts = () => {
-  Meteor.call('ShowItem', (err, res) => {
+  Meteor.call('ShowItem', (err, res) =>
+   {
     itemOpts.value = res
   })
 }

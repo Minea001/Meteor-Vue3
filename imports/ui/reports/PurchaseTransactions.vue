@@ -59,15 +59,15 @@
             <div class="col-xs-12 col-md-6 col-lg-6">
               <q-select
                 dense
-                v-model="form.customerIds"
+                v-model="form.vendorIds"
                 outlined
-                :options="customerOpts"
+                :options="vendorOpts"
                 multiple
                 emit-value
                 map-options
                 option-value="_id"
                 option-label="name"
-                label="Customer" 
+                label="Vendor" 
               />
             </div>
             <div class="col-xs-12 col-md-6 col-lg-6">
@@ -116,7 +116,7 @@
             <div class="ra-mt-sm" />
           </div>
           <div class="col colspan-12">
-            <span class="title"> Customer: </span>
+            <span class="title"> Vendor: </span>
             {{ cusFilter }}
             <div class="ra-mt-sm" />
           </div>
@@ -132,7 +132,7 @@
               <th>#</th>
               <th>Date</th>
               <th v-if="showMoreHeader('employee')">Employee</th>
-              <th>Customer</th>
+              <th>Vendor</th>
               <th>Amount</th>
               <th>Discount</th>
               <th>Total</th>
@@ -145,7 +145,7 @@
                 {{ formDate(doc.tranDate) }}
               </td>
               <td v-if="showMoreHeader('employee')">{{ doc.empName }}</td>
-              <td>{{ doc.cusName }}</td>
+              <td>{{ doc.venName }}</td>
               <td>{{ doc.subTotal }}</td>
               <td>{{ doc.discount }}</td>
               <td>{{ doc.total }}</td>
@@ -167,21 +167,21 @@ import ReportLayoutVue from '../layouts/ReportLayout.vue'
 
 const execTime = ref(0)
 const paperSize = ref('a4-p')
-const reportName = ref('Sale Transaction')
+const reportName = ref('Purchase Transaction')
 const columns = ref([{ label: 'Employee', value: 'employee' }]) //?
 const checkedColumns = ref(['employee'])
 const reportData = ref([])
 const grandTotal = ref(0)
 const cssText = ref(``)
 const form = ref({
-  customerIds: [],
+  vendorIds: [],
   employeeIds: [],
   dateT: moment(new Date()).format('YYYY/MM/DD'),
   dateF: moment(new Date()).format('YYYY/MM/DD'),
 })
 
 const employeeOpts = ref([])
-const customerOpts = ref([])
+const vendorOpts = ref([])
 
 const changeColumn = (val) => {
   checkedColumns.value = val
@@ -205,8 +205,8 @@ const empFilter = computed(()=>{
 })
 // Filter Customer
 const cusFilter = computed(()=>{
-    const selected = customerOpts.value.filter(it=>{
-        return form.value.customerIds.includes(it._id)
+    const selected = vendorOpts.value.filter(it=>{
+        return form.value.vendorIds.includes(it._id)
     })
     if(selected.length){
         return selected.map(it=>it.name)
@@ -221,15 +221,15 @@ const submit = () => {
       moment(form.value.dateF).endOf('day').toDate(),
     ],
   }
-  if (form.value.customerIds.length) {
-    selector.customerIds = form.value.customerIds
+  if (form.value.vendorIds.length) {
+    selector.vendorIds = form.value.vendorIds
   }
   if (form.value.employeeIds.length) {
     selector.employeeIds = form.value.employeeIds
   }
 
   reportData.value = []
-  Meteor.call('saleTransactions', { ...selector }, (err, res) => {
+  Meteor.call('purchaseTransactions', { ...selector }, (err, res) => {
     if (err) {
       console.log(err)
     } else {
@@ -244,15 +244,15 @@ const getEmployeeOpts = () => {
     employeeOpts.value = res
   })
 }
-const getCustomerOpts = () => {
-  Meteor.call('ShowCustomer', (err, res) => {
-    customerOpts.value = res
+const getVendorOpts = () => {
+  Meteor.call('ShowVendor', (err, res) => {
+    vendorOpts.value = res
   })
 }
 
 onMounted(() => {
   getEmployeeOpts()
-  getCustomerOpts()
+  getVendorOpts()
 })
 </script>
 <style lang="scss" scoped>
