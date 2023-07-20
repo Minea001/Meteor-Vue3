@@ -86,7 +86,7 @@
                             <th>#</th>
                             <th>Date</th>
                             <th>Vendor</th>
-                            <th>Discount</th>
+                            <th v-if="onclick(showMoreHeader)">Discount</th>
                             <th>Paid</th>
                         </tr>
                     </thead>
@@ -112,8 +112,10 @@
                         </template>
                     </tbody>
                 </table>
-                <span class="float-right text-lg font-medium mt-2">
+                <span class="float-right text-md font-medium mt-2 text-bold">
                     Total Paid: {{ grandTotalPaid }}
+                    <br>
+                    Total Discount: {{ grandTotalDiscount }}
                 </span>
             </div>
         </ReportLayoutVue>
@@ -132,9 +134,10 @@ const columns = ref([
     { label: 'Employee', value: 'empname' },
     { label: 'Vendor', value: 'venname' },
 ])
-const checkedColumns = ref(['gender', 'address'])
+const checkedColumns = ref(['discount'])
 const reportData = ref([])
 const grandTotalPaid = ref(0)
+const grandTotalDiscount=ref(0)
 const cssText = ref(``)
 const form = ref({
     vendorIds: [],
@@ -196,6 +199,7 @@ const submit = () => {
         } else {
             reportData.value = res.datares
             grandTotalPaid.value = res.grandTotalPaid
+            grandTotalDiscount.value=res.grandTotalDiscount
         }
     })
 }

@@ -112,8 +112,10 @@
                         </template>
                     </tbody>
                 </table>
-                <span class="float-right text-lg font-medium mt-2">
-                    Total: {{ grandTotalRecieve }}
+                <span class="float-right text-md font-medium mt-2 font-bold">
+                    Total Receive: {{ grandTotalRecieve }}
+                    <br>
+                    Total Discount: {{ grandTotalDiscount }}
                 </span>
             </div>
         </ReportLayoutVue>
@@ -135,6 +137,7 @@ const columns = ref([
 const checkedColumns = ref(['gender', 'address'])
 const reportData = ref([])
 const grandTotalRecieve = ref(0)
+const grandTotalDiscount=ref(0)
 const cssText = ref(``)
 const form = ref({
     customerIds: [],
@@ -205,6 +208,7 @@ const submit = () => {
         } else {
             reportData.value = res.datares
             grandTotalRecieve.value = res.grandTotalReceive
+            grandTotalDiscount.value=res.grandTotalDiscount
         }
     })
 }
