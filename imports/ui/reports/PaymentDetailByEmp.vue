@@ -86,7 +86,7 @@
                             <th>#</th>
                             <th>Date</th>
                             <th>Vendor</th>
-                            <th v-if="onclick(showMoreHeader)">Discount</th>
+                            <th>Discount</th>
                             <th>Paid</th>
                         </tr>
                     </thead>
