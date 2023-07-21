@@ -101,9 +101,11 @@
 import { ref, defineAsyncComponent, nextTick, onMounted, shallowRef } from 'vue'
 import moment from 'moment'
 import Notify from '../../lib/notify.js'
-const UserForm = shallowRef(
-  defineAsyncComponent(() => import('./UserForm.vue'))
-)
+// const UserForm = shallowRef(
+//   defineAsyncComponent(() => import('./UserForm.vue'))
+// )
+
+import UserForm from './UserForm.vue'
 
 // Composables
 import useMethod from '../../composables/useMethod'

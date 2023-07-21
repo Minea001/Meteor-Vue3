@@ -23,13 +23,17 @@
 import { reactive, ref, computed, watch, defineAsyncComponent } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
+import UserProfile from './admin-setting/UserProfile.vue'
+import User from './admin-setting/User.vue'
 export default {
   name: 'AdminSetting',
   components: {
-    UserProfile: defineAsyncComponent(() =>
-      import('./admin-setting/UserProfile.vue')
-    ),
-    User: defineAsyncComponent(() => import('./admin-setting/User.vue')),
+    UserProfile,
+    User
+    // UserProfile: defineAsyncComponent(() =>
+    //   import('./admin-setting/UserProfile.vue')
+    // ),
+    // User: defineAsyncComponent(() => import('./admin-setting/User.vue')),
     // Employee: defineAsyncComponent(() => import('./admin-setting/User.vue')),
   },
   setup() {
